@@ -149,6 +149,8 @@
 \gmubeamer@length@footlinebottompadding=.163cm
 \newlength\gmubeamer@length@footlineheight
 \gmubeamer@length@footlineheight=.4cm
+\newlength\gmubeamer@length@sideblockpadding
+\gmubeamer@length@sideblockpadding=0.35cm
 \newlength\gmubeamer@length@logoheight
 \gmubeamer@length@logoheight=1.9cm
 \definecolor{gmubeamer@base}{RGB}{0,82,57}
@@ -169,14 +171,32 @@
 \setbeamersize{%
   text margin left=\gmubeamer@length@margin,
   text margin right=\gmubeamer@length@margin}
+% Title of a rightblock on the current slide (see below); it is set while the
+% frame contents are typeset, which happens before the frame title, and is
+% cleared after each slide.
+\let\gmubeamer@rightblocktitle\@empty
+\appto\beamer@reseteecodes{\global\let\gmubeamer@rightblocktitle\@empty}
 \setbeamertemplate{frametitle}{%
   \vskip\gmubeamer@length@topmargin
-  \vtop{{%
-      \usebeamerfont{frametitle}{\insertframetitle}%
-      \ifx\insertframesubtitle\@empty\else\\
-        \usebeamerfont{framesubtitle}{\insertframesubtitle}
-      \fi}
-    \vfill}}
+  \hbox{%
+    \ifx\gmubeamer@rightblocktitle\@empty\else
+      % keep the frame title clear of the side block and put the rightblock
+      % title on top of the side block, on the same baseline
+      \hsize=\dimexpr2\paperwidth/3-\gmubeamer@length@margin
+        -\gmubeamer@length@sideblockpadding\relax
+      \rlap{\hskip\dimexpr2\paperwidth/3+\gmubeamer@length@sideblockpadding
+          -\gmubeamer@length@margin\relax
+        \vtop{\hsize=\dimexpr\paperwidth/3
+            -2\gmubeamer@length@sideblockpadding\relax
+          \raggedright\noindent\normalfont\normalsize\bfseries\color{white}%
+          \gmubeamer@rightblocktitle\par}}%
+    \fi
+    \vtop{{%
+        \usebeamerfont{frametitle}{\insertframetitle}%
+        \ifx\insertframesubtitle\@empty\else\\
+          \usebeamerfont{framesubtitle}{\insertframesubtitle}
+        \fi}
+      \vfill}}}
 \setbeamertemplate{navigation symbols}{}
 \setbeamertemplate{footline}{%
   \hbox to \paperwidth{%
@@ -201,6 +221,77 @@
     \hskip\gmubeamer@length@margin
     \vrule width 0pt height \gmubeamer@length@footlineheight
            depth \gmubeamer@length@footlinebottompadding}}
+% \begin{frame}[sideblock]: the right third of the slide is covered by the green
+% side block graphic and the footline shows only the page number. Frame options
+% are not processed inside a group, so the templates are changed in a page
+% style applied to the frame's pages only (the same mechanism as [plain]).
+\def\ps@gmusideblock{%
+  \ps@navigation
+  \setbeamertemplate{footline}{%
+    \hbox to \paperwidth{%
+      \hfil
+      \usebeamercolor[fg]{page number in head/foot}%
+        \usebeamerfont{author in head/foot}\insertframenumber/%
+        \inserttotalframenumber
+      \hskip\gmubeamer@length@sideblockpadding
+      \vrule width 0pt height \gmubeamer@length@footlineheight
+             depth \gmubeamer@length@footlinebottompadding}}%
+  \setbeamertemplate{background}{%
+    \hbox to \paperwidth{\hfill
+      \includegraphics[width=\dimexpr\paperwidth/3\relax,height=\paperheight]%
+        {branding/side_green_block.pdf}}}}
+\define@key{beamerframe}{sideblock}[true]{%
+  \csname KV@beamerframe@t\endcsname{true}%
+  \def\beamer@exitcode{\thispagestyle{gmusideblock}}}
+% beamer puts a 1.5em strut at the start of each bibliography entry to space
+% the entries; drop it for the first entry of a leftblock or rightblock, so that
+% a bibliography starts at the top of the block like any other content.
+\newif\ifgmubeamer@firstbibentry
+\patchcmd\beamer@newblock{\ht\beamer@tempbox=1.5em}%
+  {\ht\beamer@tempbox=\ifgmubeamer@firstbibentry
+     \z@\global\gmubeamer@firstbibentryfalse\else 1.5em\fi}{}%
+  {\PackageWarning{beamerthemeGMU}{Could not patch the bibliography spacing}}
+% Start of a leftblock or rightblock: the minipage hangs from the baseline of
+% the line it sits on, and its contents are raised by the height of a capital
+% letter, so that the first line of text sits where it would in a [t] frame.
+\def\gmubeamer@blocktop{\vskip-\fontcharht\font`\A\relax}
+% \begin{leftblock}...\end{leftblock}: content kept clear of the side block, a
+% top-aligned minipage from the left text margin to
+% \gmubeamer@length@sideblockpadding before the side block.
+\newenvironment{leftblock}{%
+  \noindent
+  \begin{minipage}[t]{\dimexpr2\paperwidth/3-\gmubeamer@length@margin
+      -\gmubeamer@length@sideblockpadding\relax}%
+  \gmubeamer@blocktop
+  \global\gmubeamer@firstbibentrytrue
+}{%
+  \global\gmubeamer@firstbibentryfalse
+  \end{minipage}}
+% \begin{rightblock}{Title}...\end{rightblock}: content placed on top of the
+% side block, a top-aligned minipage spanning the block minus
+% \gmubeamer@length@sideblockpadding on each side (it reaches into the right
+% text margin), with white text. A non-empty Title is shown on top of the side
+% block, level with the frame title. To place it next to a leftblock, start it
+% right after \end{leftblock}, without a blank line in between.
+\newenvironment{rightblock}[1]{%
+  \gdef\gmubeamer@rightblocktitle{#1}%
+  \hfill
+  \begin{minipage}[t]{\dimexpr\paperwidth/3
+      -2\gmubeamer@length@sideblockpadding\relax}%
+  \gmubeamer@blocktop
+  \global\gmubeamer@firstbibentrytrue
+  \raggedright
+  \color{white}%
+  \setbeamercolor{bibliography item}{fg=white}%
+  \setbeamercolor{bibliography entry author}{fg=white}%
+  \setbeamercolor{bibliography entry title}{fg=white}%
+  \setbeamercolor{bibliography entry location}{fg=white}%
+  \setbeamercolor{bibliography entry note}{fg=white}%
+}{%
+  \global\gmubeamer@firstbibentryfalse
+  \end{minipage}%
+  \hspace*{\dimexpr\gmubeamer@length@sideblockpadding
+    -\gmubeamer@length@margin\relax}}
 \setbeamertemplate{title page}{%
   \begin{tikzpicture}[remember picture,overlay]
     \node[anchor=east,inner sep=-30pt,opacity=0.10] at (current page.east)

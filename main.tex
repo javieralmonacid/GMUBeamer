@@ -123,8 +123,27 @@ text above a block\footnote{a footnote with an \url{https://address.edu}}
 \end{frame}
 
 \section{\bibname}
-\begin{frame}[t]{\bibname}
-\printbibliography[heading=none]
+\begin{frame}[sideblock]{Bibliography}
+
+\begin{leftblock}
+\begin{thebibliography}{9}
+  \bibitem{b0}
+  P.~J. Fry, T. Leela and H.~J. Farnsworth,
+  \emph{Optimal delivery routes through the Bermuda Tetrahedron: a time-dependent shortest-path problem with anchovy constraints},
+  \newblock{J. Interplanet. Delivery Sci. {\bf 42} (3001), 1--1000}.
+  
+  \bibitem{b1}
+  J.~A. Zoidberg and P.~J. Fry,
+  \emph{On the absence of the delta brainwave in a twentieth-century human: a case study in accidental immunity to telepathic attack},
+  \newblock{Decapod. J. Hum. Med. {\bf 7} (3002), 12--13}.
+\end{thebibliography}
+\end{leftblock}%
+\begin{rightblock}{Acknowledgements}
+Or funding, contact\\
+or any other information.\\[1em]
+example@gmu.edu
+\end{rightblock}
+
 \end{frame}
 
 \makeoutro
