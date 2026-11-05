@@ -43,6 +43,13 @@
 \RequirePackage{etoolbox}
 \RequirePackage[default]{lato}
 \RequirePackage{tikz}
+\RequirePackage{amsmath}
+\RequirePackage{sansmathfonts}
+\usefonttheme{professionalfonts}
+\renewcommand{\rmdefault}{\latofamily}
+\renewcommand{\familydefault}{\latofamily}
+%\renewcommand{\mddefault}{l}      % try el for extra light
+%\renewcommand{\seriesdefault}{l}
 \DeclareOptionBeamer{locale}{\def\gmubeamer@option@locale{#1}}
 \ExecuteOptionsBeamer{locale={%
   \@ifundefined{languagename}{english}{\languagename}}}
@@ -136,6 +143,8 @@
 \fi
 \newlength\gmubeamer@length@margin
 \gmubeamer@length@margin=0.7cm
+\newlength\gmubeamer@length@topmargin
+\gmubeamer@length@topmargin=0.3cm
 \newlength\gmubeamer@length@footlinebottompadding
 \gmubeamer@length@footlinebottompadding=.163cm
 \newlength\gmubeamer@length@footlineheight
@@ -157,11 +166,11 @@
 \else
   \colorlet   {gmubeamer@label}{gmubeamer@base}
 \fi
-\useoutertheme{infolines}
 \setbeamersize{%
   text margin left=\gmubeamer@length@margin,
   text margin right=\gmubeamer@length@margin}
 \setbeamertemplate{frametitle}{%
+  \vskip\gmubeamer@length@topmargin
   \vtop{{%
       \usebeamerfont{frametitle}{\insertframetitle}%
       \ifx\insertframesubtitle\@empty\else\\
@@ -194,7 +203,7 @@
            depth \gmubeamer@length@footlinebottompadding}}
 \setbeamertemplate{title page}{%
   \begin{tikzpicture}[remember picture,overlay]
-    \node[anchor=east,inner sep=-30pt,opacity=0.15] at (current page.east)
+    \node[anchor=east,inner sep=-30pt,opacity=0.10] at (current page.east)
       {\includegraphics[height=1.25\paperheight]{branding/elem-1.pdf}};
   \end{tikzpicture}%
   \vskip\gmubeamer@length@margin
@@ -219,16 +228,39 @@
 \setbeamertemplate{itemize items}[square]
 \setbeamertemplate{blocks}[default]
 \setbeamertemplate{caption}[numbered]
+% Table of contents: one fixed gap above every section and above the first
+% subsection of each section (beamer otherwise spreads sections with \vfill).
+\def\gmubeamer@tocskip{0.6em}
+\patchcmd\beamer@sectionintoc{\vfill}{\vskip\gmubeamer@tocskip}{}%
+  {\PackageWarning{beamerthemeGMU}{Could not patch the table of contents}}
+\setbeamertemplate{section in toc}[sections numbered]
+\setbeamertemplate{subsection in toc}{%
+  \ifnum\inserttocsubsectionnumber=1 \vskip\gmubeamer@tocskip\fi
+  \leavevmode\leftskip=1.5em
+  \inserttocsectionnumber.\inserttocsubsectionnumber\enskip
+  \inserttocsubsection\par}
 \newcommand\makeoutro{%
   \begingroup
   \setbeamercolor{background canvas}{bg=gmubeamer@label}
-  \begin{frame}[plain]
+  \begin{frame}[plain,noframenumbering]
   \vfill
   \centering
   \includegraphics[width=0.35\textwidth]{branding/gmu-logo-vertical-white.pdf}%
   \vfill
   \end{frame}
   \endgroup}
+\newcommand\SectionPage[1][]{%
+  \begin{frame}[plain,noframenumbering]
+  \vfill
+  \centering
+  {\usebeamerfont{title}\usebeamercolor[fg]{title}\insertsection\par}
+  \def\gmubeamer@temp@subtitle{#1}%
+  \ifx\gmubeamer@temp@subtitle\@empty\else
+    \vskip\gmubeamer@length@margin
+    {\usebeamerfont{subtitle}\usebeamercolor[fg]{subtitle}#1\par}%
+  \fi
+  \vfill
+  \end{frame}}
 \setbeamerfont{structure}{series=\mdseries}
 \setbeamercolor{structure}{fg=gmubeamer@base}
 
@@ -261,8 +293,6 @@
 \setbeamerfont{framesubtitle}{series=\bfseries,size=\large}
 \setbeamercolor{framesubtitle}{parent=subtitle}
 
-\setbeamerfont{section in head/foot}{series=\bfseries}
-
 \setbeamercolor{bibliography entry author}{%
   use=normal text,fg=normal text.fg}
 \setbeamercolor{bibliography entry title}{%
@@ -274,12 +304,6 @@
 
 \setbeamerfont{footnote}{size=\footnotesize}
 \setbeamercolor{footnote mark}{parent=structure}
-
-\setbeamerfont{section in head/foot}{parent=structure}
-\setbeamercolor{section in head/foot}{parent=structure}
-
-\setbeamerfont{subsection in head/foot}{parent=normal text}
-\setbeamercolor{subsection in head/foot}{parent=structure}
 
 \setbeamercolor{block title}{fg=white,bg=gmubeamer@base}
 \setbeamercolor{block title example}{%

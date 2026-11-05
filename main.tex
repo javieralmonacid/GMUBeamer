@@ -24,6 +24,10 @@
 \maketitle
 \end{frame}
 
+\begin{frame}{Outline}
+\tableofcontents
+\end{frame}
+
 \section[Short Section 1 Name]{Full Section 1 Name}
 \subsection[Short Subsection 1 Name]{Full Subsection 1 Name}
 
@@ -45,7 +49,9 @@ plain text, \structure{page structure}, \alert{emphasis}
   \item a numbered list item
   \begin{enumerate}
     \item a second-level list item containing a math expression
-      \[ E = mc^2 \]
+      \[ 
+        -\mu \Delta \mathbf{u} + (\nabla \mathbf{u}) \mathbf{u} + \nabla p = \mathbf{f} \enskip \text{in } \Omega, \quad \int_{\Omega} p \, dx = 0, \quad u_D \sim \sin(x) \enskip \text{on }\partial \Omega.
+      \]
       and a citation \cite{einstein1905tragheit}
   \end{enumerate}
 \end{enumerate}
@@ -95,15 +101,30 @@ text above a block\footnote{a footnote with an \url{https://address.edu}}
 \end{table}
 \end{frame}
 
-\section{\bibname}
-\begin{frame}[t, allowframebreaks]{\bibname}
-\printbibliography[heading=none]
+\section[Short Section 2 Name]{Full Section 2 Name}
+\SectionPage[This is a subtitle]
+
+\begin{frame}[c]{A Numbered Figure}
+  \begin{figure}
+    \centering
+    \includegraphics[width=0.5\textwidth]{branding/gmu-logo-horizontal-black.pdf}
+    \caption{This is a caption.}
+  \end{figure}
+\end{frame}
+
+\begin{frame}[t, plain]{A slide with no footer}
+  In case more space is needed at the bottom
 \end{frame}
 
 \begin{frame}[plain]
 \vfill
-\centerline{Thank You for Your Attention!}
-\vfill\vfill
+\centerline{A plain slide with no title or footer}
+\vfill
+\end{frame}
+
+\section{\bibname}
+\begin{frame}[t]{\bibname}
+\printbibliography[heading=none]
 \end{frame}
 
 \makeoutro
