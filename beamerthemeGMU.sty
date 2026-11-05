@@ -41,15 +41,10 @@
    Vit Novotny, Masaryk University]
 \mode<presentation>
 \RequirePackage{etoolbox}
-\RequirePackage[default]{lato}
 \RequirePackage{tikz}
-\RequirePackage{amsmath}
-\RequirePackage{sansmathfonts}
-\usefonttheme{professionalfonts}
-\renewcommand{\rmdefault}{\latofamily}
-\renewcommand{\familydefault}{\latofamily}
-%\renewcommand{\mddefault}{l}      % try el for extra light
-%\renewcommand{\seriesdefault}{l}
+% scale=<factor>: scales the text font (Lato), e.g. \usetheme[scale=0.98]{GMU}.
+\DeclareOptionBeamer{scale}{\def\gmubeamer@option@scale{#1}}
+\ExecuteOptionsBeamer{scale=1}
 \DeclareOptionBeamer{locale}{\def\gmubeamer@option@locale{#1}}
 \ExecuteOptionsBeamer{locale={%
   \@ifundefined{languagename}{english}{\languagename}}}
@@ -85,6 +80,16 @@
 \DeclareOptionBeamer{color}{\gmubeamer@option@grayfalse}
 \ExecuteOptionsBeamer{color}
 \ProcessOptionsBeamer
+\edef\gmubeamer@temp@lato{%
+  \noexpand\RequirePackage[default,scale=\gmubeamer@option@scale]{lato}}
+\gmubeamer@temp@lato
+\RequirePackage{amsmath}
+\RequirePackage{sansmathfonts}
+\usefonttheme{professionalfonts}
+\renewcommand{\rmdefault}{\latofamily}
+\renewcommand{\familydefault}{\latofamily}
+%\renewcommand{\mddefault}{l}      % try el for extra light
+%\renewcommand{\seriesdefault}{l}
 \ifgmubeamer@option@scaling
   \RequirePackage{PTSansCaption}
   \@ifpackageloaded{fontspec}{
