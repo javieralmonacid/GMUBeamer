@@ -20,7 +20,7 @@ It is adapted from the MU Beamer theme by Vít Novotný (Masaryk University).
 
 3. Compile with pdfLaTeX, for example `latexmk -pdf main.tex`.
 
-The theme is designed for 16:9 slides (`aspectratio=169`).
+You may also download a .zip copy of this repository and start modifying the `main.tex` file. The theme is designed for 16:9 slides (`aspectratio=169`).
 
 ### Requirements
 
