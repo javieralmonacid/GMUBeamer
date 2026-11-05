@@ -1,0 +1,302 @@
+%%
+%% This is file `beamerthemeGMU.sty'.
+%%
+%% A Beamer presentation theme for George Mason University, hand-adapted
+%% from the MU Beamer theme for Masaryk University (GMU branding, colors,
+%% fonts, and layout; the "gmubeamer@" internal naming).
+%%
+%% Original MU Beamer theme:
+%% Copyright 2017-2022  Vít Novotný <witiko@mail.muni.cz>
+%% Faculty of Informatics, Masaryk University (Brno, Czech Republic)
+%%
+%% Copyright 2017  Aleš Křenek <ljocha@ics.muni.cz>
+%% Institute of Computer Science, Masaryk University (Brno, Czech Republic)
+%%
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either version
+%% 1.3 of this license or (at your option) any later version.
+%% The latest version of this license is available at
+%%
+%%   http://www.latex-project.org/lppl.txt
+%%
+%% and version 1.3 or later is part of all distributions of LaTeX
+%% version 2005/12/01 or later.
+%%
+%% This work has the LPPL maintenance status `maintained'.
+%%
+%% The Current Maintainer of this GMU adaptation is Javier Almonacid
+%% <jalmonac@gmu.edu>.
+%%
+%% The Current Maintainer of the original MU Beamer theme is Vít Novotný.
+%% Send bug reports, requests for additions and questions regarding the
+%% original theme either to the fithesis discussion forum at
+%%
+%%   http://is.muni.cz/auth/df/fithesis-sazba/
+%%
+%% or to the e-mail address <witiko@mail.muni.cz>.
+%%
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{beamerthemeGMU}%
+  [2026/08/21 GMU Beamer theme, derived from the MU Beamer theme by
+   Vit Novotny, Masaryk University]
+\mode<presentation>
+\RequirePackage{etoolbox}
+\RequirePackage[default]{lato}
+\RequirePackage{tikz}
+\DeclareOptionBeamer{locale}{\def\gmubeamer@option@locale{#1}}
+\ExecuteOptionsBeamer{locale={%
+  \@ifundefined{languagename}{english}{\languagename}}}
+\newif\ifgmubeamer@option@fonts
+\newif\ifgmubeamer@option@scaling
+\def\gmubeamer@temp@option@fonts@none{none}
+\def\gmubeamer@temp@option@fonts@basic{basic}
+\def\gmubeamer@temp@option@fonts@scaled{scaled}
+\DeclareOptionBeamer{fonts}{%
+  \def\gmubeamer@temp@option@arg{#1}%
+  \ifx\gmubeamer@temp@option@arg\gmubeamer@temp@option@fonts@none
+    \gmubeamer@option@fontsfalse
+    \gmubeamer@option@scalingfalse
+  \else
+    \ifx\gmubeamer@temp@option@arg\gmubeamer@temp@option@fonts@basic
+      \gmubeamer@option@fontstrue
+      \gmubeamer@option@scalingfalse
+    \else
+      \ifx\gmubeamer@temp@option@arg\gmubeamer@temp@option@fonts@scaled
+        \gmubeamer@option@fontstrue
+        \gmubeamer@option@scalingtrue
+      \else
+        \PackageError{beamerthemeGMU}%
+          {fonts=#1 is not a valid option}%
+          {fonts={none|basic|scaled} are the only valid options}%
+      \fi
+    \fi
+  \fi
+}
+\ExecuteOptionsBeamer{fonts=none}
+\newif\ifgmubeamer@option@gray
+\DeclareOptionBeamer{gray}{\gmubeamer@option@graytrue}
+\DeclareOptionBeamer{color}{\gmubeamer@option@grayfalse}
+\ExecuteOptionsBeamer{color}
+\ProcessOptionsBeamer
+\ifgmubeamer@option@scaling
+  \RequirePackage{PTSansCaption}
+  \@ifpackageloaded{fontspec}{
+    \begingroup
+    \newfontfamily\gmubeamer@temp@fontname
+      [NFSSFamily=PTSansCaption-TLF]{PT Sans Caption}
+    \endgroup
+  }{}
+\fi
+\ifgmubeamer@option@fonts
+  \RequirePackage{PTSans}
+  \RequirePackage{PTMono}
+  \@ifpackageloaded{fontspec}{
+    \begingroup
+    \newfontfamily\gmubeamer@temp@fontname
+      [NFSSFamily=PTSans-TLF]{PT Sans}
+    \endgroup
+    \begingroup
+    \newfontfamily\gmubeamer@temp@fontname
+      [NFSSFamily=PTMono-TLF]{PT Mono}
+    \endgroup
+  }{}
+\fi
+\newif\ifgmubeamer@scaling@enabled
+\ifgmubeamer@option@scaling
+  \def\gmubeamer@scaling@family@basic{PTSans-TLF}
+  \def\gmubeamer@scaling@family@caption{PTSansCaption-TLF}
+  \gmubeamer@scaling@enabledtrue
+  \def\gmubeamer@scaling@apply #1 (#2 -> #3){%
+    \expandafter\let\expandafter\gmubeamer@temp@fontsize
+      \csname #1\endcsname
+    \expandafter\let\csname gmubeamer@original@#1\endcsname
+      \gmubeamer@temp@fontsize
+    \expandafter\def\csname #1\endcsname{%
+      \ifgmubeamer@scaling@enabled
+        \expandafter\ifx\csname gmubeamer@scaling@family@#2\endcsname
+          \sfbasic\expandafter\let\expandafter\sfdefault
+          \csname gmubeamer@scaling@family@#3\endcsname
+        \fi
+        \expandafter\ifx\csname gmubeamer@scaling@family@#2\endcsname
+          \f@family\expandafter\fontfamily
+          \csname gmubeamer@scaling@family@#3\endcsname\selectfont
+        \fi
+      \fi
+      \csname gmubeamer@original@#1\endcsname}}
+  \gmubeamer@scaling@apply Huge         (caption -> basic)
+  \gmubeamer@scaling@apply huge         (caption -> basic)
+  \gmubeamer@scaling@apply LARGE        (caption -> basic)
+  \gmubeamer@scaling@apply Large        (caption -> basic)
+  \gmubeamer@scaling@apply large        (caption -> basic)
+  \gmubeamer@scaling@apply normalsize   (caption -> basic)
+  \gmubeamer@scaling@apply small        (caption -> basic)
+  \gmubeamer@scaling@apply footnotesize (basic -> caption)
+  \gmubeamer@scaling@apply scriptsize   (basic -> caption)
+  \gmubeamer@scaling@apply tiny         (basic -> caption)
+\fi
+\newlength\gmubeamer@length@margin
+\gmubeamer@length@margin=0.7cm
+\newlength\gmubeamer@length@footlinebottompadding
+\gmubeamer@length@footlinebottompadding=.163cm
+\newlength\gmubeamer@length@footlineheight
+\gmubeamer@length@footlineheight=.4cm
+\newlength\gmubeamer@length@logoheight
+\gmubeamer@length@logoheight=1.9cm
+\definecolor{gmubeamer@base}{RGB}{0,82,57}
+\definecolor{gmubeamer@gray1}{RGB}{240,240,240}
+\definecolor{gmubeamer@gray2}{RGB}{225,225,225}
+\definecolor{gmubeamer@gray3}{RGB}{210,210,210}
+\definecolor{gmubeamer@gray4}{RGB}{190,190,190}
+\definecolor{gmubeamer@gray5}{RGB}{170,170,170}
+\definecolor{gmubeamer@gray6}{RGB}{150,150,150}
+\definecolor{gmubeamer@gray7}{RGB}{130,130,130}
+\definecolor{gmubeamer@orange1}{RGB}{204,72,36}
+\definecolor{gmubeamer@orange2}{RGB}{204,72,36}
+\ifgmubeamer@option@gray
+  \definecolor{gmubeamer@label}{RGB}{255,255,255}
+\else
+  \colorlet   {gmubeamer@label}{gmubeamer@base}
+\fi
+\useoutertheme{infolines}
+\setbeamersize{%
+  text margin left=\gmubeamer@length@margin,
+  text margin right=\gmubeamer@length@margin}
+\setbeamertemplate{frametitle}{%
+  \vtop{{%
+      \usebeamerfont{frametitle}{\insertframetitle}%
+      \ifx\insertframesubtitle\@empty\else\\
+        \usebeamerfont{framesubtitle}{\insertframesubtitle}
+      \fi}
+    \vfill}}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}{%
+  \hbox to \paperwidth{%
+    \makebox[0pt][l]{\raisebox{-\gmubeamer@length@footlinebottompadding}[0pt][0pt]{%
+      \includegraphics[width=\paperwidth]{branding/banner.pdf}}}%
+    \hskip\gmubeamer@length@margin
+    \hfil
+    \hspace*{1cm}\usebeamercolor[fg]{author in head/foot}%
+      \usebeamerfont{author in head/foot}\insertshortauthor
+    \usebeamercolor[fg]{structure}%
+      \usebeamerfont{structure}\ \lower2pt\hbox{\Large$\cdot$}\
+    \usebeamercolor[fg]{title in head/foot}%
+      \usebeamerfont{title in head/foot}\insertshorttitle
+    \usebeamercolor[fg]{structure}%
+      \usebeamerfont{structure}\ \lower2pt\hbox{\Large$\cdot$}\
+    \usebeamercolor[fg]{date in head/foot}%
+      \usebeamerfont{date in head/foot}\insertshortdate
+    \hfil
+    \usebeamercolor[fg]{page number in head/foot}%
+      \usebeamerfont{author in head/foot}\insertframenumber/%
+      \inserttotalframenumber\hspace*{0.2cm}
+    \hskip\gmubeamer@length@margin
+    \vrule width 0pt height \gmubeamer@length@footlineheight
+           depth \gmubeamer@length@footlinebottompadding}}
+\setbeamertemplate{title page}{%
+  \begin{tikzpicture}[remember picture,overlay]
+    \node[anchor=east,inner sep=-30pt,opacity=0.15] at (current page.east)
+      {\includegraphics[height=1.25\paperheight]{branding/elem-1.pdf}};
+  \end{tikzpicture}%
+  \vskip\gmubeamer@length@margin
+  \vspace*{-0.3cm}\hspace*{-0.2cm}\includegraphics[height=\gmubeamer@length@logoheight]%
+    {branding/gmu-logo-horizontal-black.pdf}%
+  \vskip0pt plus 6filll
+  {\usebeamerfont{title}\usebeamercolor[fg]{title}\inserttitle\par}%
+  \vskip0pt plus 1filll
+
+  {\usebeamerfont{subtitle}\usebeamercolor[fg]{subtitle}\insertsubtitle}%
+  \vskip0pt plus 4filll
+
+  {\usebeamerfont{author} \insertauthor}%
+  \vskip0pt plus 1filll
+
+  {\usebeamerfont{institute}\usebeamercolor[fg]{institute}\insertinstitute}%
+  \vskip0pt plus 1filll
+
+  {\usebeamerfont{date} \insertdate}%
+  \vskip\gmubeamer@length@margin}
+\setbeamertemplate{bibliography item}[text]
+\setbeamertemplate{itemize items}[square]
+\setbeamertemplate{blocks}[default]
+\setbeamertemplate{caption}[numbered]
+\newcommand\makeoutro{%
+  \begingroup
+  \setbeamercolor{background canvas}{bg=gmubeamer@label}
+  \begin{frame}[plain]
+  \vfill
+  \centering
+  \includegraphics[width=0.35\textwidth]{branding/gmu-logo-vertical-white.pdf}%
+  \vfill
+  \end{frame}
+  \endgroup}
+\setbeamerfont{structure}{series=\mdseries}
+\setbeamercolor{structure}{fg=gmubeamer@base}
+
+\setbeamerfont{alerted text}{series=\bfseries}
+\setbeamercolor{alerted text}{fg=gmubeamer@orange2}
+
+\setbeamerfont{title}{size=\huge,series=\bfseries}
+\setbeamercolor{title}{fg=gmubeamer@base}
+\setbeamerfont{title in head/foot}{size=\tiny,series=\bfseries}
+\setbeamercolor{title in head/foot}{parent=structure}
+
+\setbeamerfont{subtitle}{size=\large,series=\mdseries}
+\setbeamercolor{subtitle}{fg=black}
+
+\setbeamerfont{author}{series=\bfseries,size=\small}
+\setbeamerfont{author in head/foot}{size=\tiny,series=\mdseries}
+\setbeamercolor{author in head/foot}{parent=structure}
+
+\setbeamerfont{page number}{series=\footnotesize}
+\setbeamerfont{page number in head/foot}{size=\tiny,series=\mdseries}
+\setbeamercolor{page number in head/foot}{fg=white}
+
+\setbeamerfont{date}{size=\footnotesize}
+\setbeamerfont{date in head/foot}{size=\tiny,series=\mdseries}
+\setbeamercolor{date in head/foot}{parent=structure}
+
+\setbeamerfont{frametitle}{series=\bfseries,size=\Large}
+\setbeamercolor{frametitle}{parent=title}
+
+\setbeamerfont{framesubtitle}{series=\bfseries,size=\large}
+\setbeamercolor{framesubtitle}{parent=subtitle}
+
+\setbeamerfont{section in head/foot}{series=\bfseries}
+
+\setbeamercolor{bibliography entry author}{%
+  use=normal text,fg=normal text.fg}
+\setbeamercolor{bibliography entry title}{%
+  use=normal text,fg=normal text.fg}
+\setbeamercolor{bibliography entry location}{%
+  use=normal text,fg=normal text.fg}
+\setbeamercolor{bibliography entry note}{%
+  use=normal text,fg=normal text.fg}
+
+\setbeamerfont{footnote}{size=\footnotesize}
+\setbeamercolor{footnote mark}{parent=structure}
+
+\setbeamerfont{section in head/foot}{parent=structure}
+\setbeamercolor{section in head/foot}{parent=structure}
+
+\setbeamerfont{subsection in head/foot}{parent=normal text}
+\setbeamercolor{subsection in head/foot}{parent=structure}
+
+\setbeamercolor{block title}{fg=white,bg=gmubeamer@base}
+\setbeamercolor{block title example}{%
+  use=alerted text,fg=white,bg=gmubeamer@gray7}
+\setbeamercolor{block title alerted}{%
+  use=alerted text,fg=white,bg=gmubeamer@orange1}
+
+\setbeamercolor{block body}{%
+  parent=normal text,use=block title,
+  bg=block title.bg!10!bg}
+\setbeamercolor{block body example}{%
+  parent=normal text,bg=gmubeamer@gray1}
+\setbeamercolor{block body alerted}{%
+  parent=normal text,use=block title alerted,
+  bg=block title alerted.bg!10!bg}
+\mode
+  <all>
+\endinput
+%%
+%% End of file `beamerthemeGMU.sty'.
