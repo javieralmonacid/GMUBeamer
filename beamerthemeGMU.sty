@@ -153,6 +153,13 @@
 \gmubeamer@length@sideblockpadding=0.35cm
 \newlength\gmubeamer@length@logoheight
 \gmubeamer@length@logoheight=1.9cm
+% Logo on the title page; \replacelogo[<height>]{<image file>} swaps it for
+% another image, shown at <height> if given and at the current logo height
+% otherwise. Use it in the preamble or before \maketitle.
+\def\gmubeamer@logo{branding/gmu-logo-horizontal-black.pdf}
+\newcommand\replacelogo[2][]{%
+  \def\gmubeamer@logo{#2}%
+  \ifx\relax#1\relax\else\setlength\gmubeamer@length@logoheight{#1}\fi}
 \definecolor{gmubeamer@base}{RGB}{0,82,57}
 \definecolor{gmubeamer@gray1}{RGB}{240,240,240}
 \definecolor{gmubeamer@gray2}{RGB}{225,225,225}
@@ -299,7 +306,7 @@
   \end{tikzpicture}%
   \vskip\gmubeamer@length@margin
   \vspace*{-0.3cm}\hspace*{-0.2cm}\includegraphics[height=\gmubeamer@length@logoheight]%
-    {branding/gmu-logo-horizontal-black.pdf}%
+    {\gmubeamer@logo}%
   \vskip0pt plus 6filll
   {\usebeamerfont{title}\usebeamercolor[fg]{title}\inserttitle\par}%
   \vskip0pt plus 1filll
