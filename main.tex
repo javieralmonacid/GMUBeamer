@@ -16,10 +16,14 @@
 \title[Short Presentation Title]{Full Presentation Title}
 \subtitle[Short Presentation Subtitle]{Full Presentation Subtitle}
 \author[P. J. Fry]{Phillip J. Fry\texorpdfstring{\\}{, }example@gmu.edu}
-\institute[GMU Math]{Department of Astronomy, George Mason University}
+\institute[GMU Astronomy]{Department of Astronomy, George Mason University}
 \date{\today}
 \subject{Presentation Subject}
 \keywords{the, presentation, keywords}
+
+%-------------------------------------
+% Slide contents begin here
+%-------------------------------------
 \begin{document}
 
 \begin{frame}[plain]
@@ -114,17 +118,18 @@ text above a block\footnote{a footnote with an \url{https://address.edu}}
   \end{figure}
 \end{frame}
 
-\begin{frame}[t, plain]{A slide with no footer}
-  In case more space is needed at the bottom
-\end{frame}
-
 \begin{frame}[plain]
 \vfill
 \centerline{A plain slide with no title or footer}
 \vfill
 \end{frame}
 
-\section{\bibname}
+\section{Conclusions}
+\begin{frame}[t, plain]{Conclusions}
+  A slide with no footer, in case more space is needed at the bottom.
+\end{frame}
+
+% Bibliography slide with additional side content
 \begin{frame}[sideblock]{Bibliography}
 
 \begin{leftblock}
@@ -148,6 +153,7 @@ example@gmu.edu
 
 \end{frame}
 
+% Final frame with GMU logo only
 \makeoutro
 
 \end{document}
